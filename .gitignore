@@ -1,0 +1,15 @@
+# Gradle
+.gradle/
+build/
+bin/
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# Serenity / Test Reports
+target/
+site/

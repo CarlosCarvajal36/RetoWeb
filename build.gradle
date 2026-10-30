@@ -1,0 +1,73 @@
+group 'BasePruebaTecnica'
+version '1.0'
+
+apply plugin: 'java-library'
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: "net.serenity-bdd.serenity-gradle-plugin"
+
+def serenityVersion = '4.2.22'
+def cucumberVersion = '7.20.1'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        // Mapeado dinámicamente a la misma versión de Serenity (4.2.22)
+        classpath("net.serenity-bdd:serenity-gradle-plugin:4.2.22")
+    }
+}
+
+dependencies {
+    // Serenity Core & Screenplay
+    implementation "net.serenity-bdd:serenity-core:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-junit:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-ensure:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-cucumber:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-report-resources:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay-webdriver:${serenityVersion}"
+
+    // Selenium & WebDriver Manager
+    implementation 'org.seleniumhq.selenium:selenium-java:4.27.0'
+    implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
+
+    // Cucumber
+    implementation "io.cucumber:datatable:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
+
+    // Assertions & Utilities
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+}
+
+test {
+    useJUnit {
+        include "**/*"
+        gradle.startParameter.continueOnFailure = true
+        testLogging.showStandardStreams = true
+        systemProperties System.getProperties()
+        systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    }
+}
